@@ -1,0 +1,19 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# dbt files
+target/
+dbt_packages/
+logs/
+.partial_parse.msgpack
+
+# Local dbt credentials
+profiles.yml
+
+# Environment variables and secrets
+.env
