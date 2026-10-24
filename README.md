@@ -21,7 +21,7 @@ Observability: Elementary (tests, anomalies, run history) -> edr report
 
 | Layer | Models | Materialization | Why |
 |---|---|---|---|
-| Raw | `bronze_production.marketing_raw.*` | tables (CSV load) | Source of truth, never edited |
+| Raw | `marketing_dev.bronze.*` | tables (CSV load) | Source of truth, never edited |
 | Staging | `stg_facebook_*`, `stg_snapchat_*` | view | Cheap renames and casts, always fresh |
 | Intermediate | `int_marketing_ads` | ephemeral | Reusable union logic, never queried directly |
 | Mart | `fct_marketing_spend` | incremental (merge) | Largest table, only recent days need reprocessing |
@@ -66,7 +66,7 @@ so anomaly tests have little training data and are set to `warn`.
 | ci | `ci_development` | `ci_pr_<PR number>` (dropped after the run) | CI token | pull request |
 | prod | `marketing_prod` | `marketing` | **Service Principal, OAuth M2M, no PAT** | merge to `main` + nightly |
 
-Raw data lives in `bronze_production.marketing_raw` for all environments. Permissions are in
+Raw data lives in `marketing_dev.bronze` for all environments. Permissions are in
 `sql/grants.sql` (least privilege: the production Service Principal can read raw and create objects
 in `marketing_prod`, nothing else).
 
@@ -82,7 +82,7 @@ feature branch ─► pull request ─► CI: dbt deps, parse, build (+tests), d
 
 ## Setup
 
-1. Create catalogs/schemas and load the 9 CSVs into `bronze_production.marketing_raw` (strings, no type inference).
+1. Create catalogs/schemas and load the 9 CSVs into `marketing_dev.bronze` (strings, no type inference).
 2. Run `sql/grants.sql` after replacing `<SP_APPLICATION_ID>` and `<YOUR_EMAIL>`.
 3. Local:
    ```bash
@@ -105,7 +105,7 @@ dbt docs generate && dbt docs serve     # lineage graph, column descriptions
 edr report --profiles-dir . --profile-target dev   # Elementary report
 ```
 
-Screenshots: add the lineage graph and Elementary report here.
+Screenshots: Lineage graph and Elementary report here.
 
 ## Known limitations
 
